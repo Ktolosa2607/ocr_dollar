@@ -174,7 +174,8 @@
     <!-- Bibliotecas externas para PDF y OCR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
-    <script src="https://unpkg.com/tesseract.js@2.1.4/dist/tesseract.min.js"></script>
+    <!-- CAMBIO CLAVE: Actualizamos Tesseract.js a la versión 5.0.0 -->
+    <script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
     
     <script type="module">
         // Configuración del worker de pdf.js
@@ -188,8 +189,11 @@
         var ocrTextContent = ''; 
         var currentUploadedFile = null; 
 
-        // Las líneas de Tesseract.set se han eliminado para corregir el TypeError.
-        // Tesseract.js debería cargar sus workers y core automáticamente desde el CDN.
+        // CAMBIO CLAVE: Eliminamos la línea problemática
+        // const TESSERACT_VERSION = '5.0.0'; // Se mantiene para referencia si es necesario construir URLs
+        // Tesseract.TesseractWorker.prototype.get // Esta línea se ha eliminado
+        const TESSERACT_BASE_URL = `https://unpkg.com/tesseract.js@5.0.0/dist`; // Usamos la versión directamente
+        const TESSERACT_LANG_URL = `https://unpkg.com/tesseract.js-lang@1.0.0/lang`; // URL para los datos de idioma
 
 
         // Obtener referencias a los elementos del DOM
@@ -360,7 +364,12 @@
                                         } else {
                                             ocrStatusDiv.textContent = `OCR para ${file.name}: ${m.status}`;
                                         }
-                                    }
+                                    },
+                                    // Pasamos las rutas explícitas de los workers y del core aquí
+                                    // Usamos TESSERACT_BASE_URL para construir las rutas relativas a la versión 5.0.0
+                                    workerPath: `${TESSERACT_BASE_URL}/worker.min.js`,
+                                    corePath: `${TESSERACT_BASE_URL}/tesseract-core.wasm`, 
+                                    langPath: TESSERACT_LANG_URL // Ruta para los datos de idioma
                                 }
                             );
                             ocrTextContent = text.trim();
