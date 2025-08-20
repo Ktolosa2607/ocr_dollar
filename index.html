@@ -174,7 +174,7 @@
     <!-- Bibliotecas externas para PDF y OCR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js"></script>
-    <!-- CAMBIO CLAVE: Actualizamos Tesseract.js a la versión 5.0.0 -->
+    <!-- CAMBIO CLAVE: Se mantiene la versión 5.0.0 de Tesseract.js -->
     <script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
     
     <script type="module">
@@ -189,11 +189,14 @@
         var ocrTextContent = ''; 
         var currentUploadedFile = null; 
 
-        // CAMBIO CLAVE: Eliminamos la línea problemática
-        // const TESSERACT_VERSION = '5.0.0'; // Se mantiene para referencia si es necesario construir URLs
-        // Tesseract.TesseractWorker.prototype.get // Esta línea se ha eliminado
-        const TESSERACT_BASE_URL = `https://unpkg.com/tesseract.js@5.0.0/dist`; // Usamos la versión directamente
-        const TESSERACT_LANG_URL = `https://unpkg.com/tesseract.js-lang@1.0.0/lang`; // URL para los datos de idioma
+        // CAMBIO CLAVE: Definición correcta de las rutas para Tesseract.js v5.0.0
+        // Estas variables ahora son 'const' y se usan directamente en Tesseract.recognize.
+        // Asegúrate de que estas rutas sean correctas para la estructura de archivos del CDN.
+        const TESSERACT_VERSION = '5.0.0';
+        // Esta es la URL BASE donde Tesseract.js espera encontrar worker.min.js, y los archivos .wasm
+        const TESSERACT_CORE_PATH = `https://unpkg.com/tesseract.js@${TESSERACT_VERSION}/dist/`;
+        // Esta es la URL BASE para los datos de idioma, que Tesseract.js busca en un subdirectorio 'lang/'
+        const TESSERACT_LANG_PATH = `https://unpkg.com/tesseract.js-lang@1.0.0/lang/`;
 
 
         // Obtener referencias a los elementos del DOM
@@ -365,11 +368,10 @@
                                             ocrStatusDiv.textContent = `OCR para ${file.name}: ${m.status}`;
                                         }
                                     },
-                                    // Pasamos las rutas explícitas de los workers y del core aquí
-                                    // Usamos TESSERACT_BASE_URL para construir las rutas relativas a la versión 5.0.0
-                                    workerPath: `${TESSERACT_BASE_URL}/worker.min.js`,
-                                    corePath: `${TESSERACT_BASE_URL}/tesseract-core.wasm`, 
-                                    langPath: TESSERACT_LANG_URL // Ruta para los datos de idioma
+                                    // CAMBIO CLAVE: Rutas corregidas para Tesseract.js v5.0.0
+                                    workerPath: `${TESSERACT_CORE_PATH}worker.min.js`,
+                                    corePath: `${TESSERACT_CORE_PATH}tesseract-core.wasm`, // v5 usa .wasm directamente
+                                    langPath: TESSERACT_LANG_PATH // Ruta para los datos de idioma
                                 }
                             );
                             ocrTextContent = text.trim();
