@@ -188,6 +188,10 @@
         var ocrTextContent = ''; 
         var currentUploadedFile = null; 
 
+        // Las líneas de Tesseract.set se han eliminado para corregir el TypeError.
+        // Tesseract.js debería cargar sus workers y core automáticamente desde el CDN.
+
+
         // Obtener referencias a los elementos del DOM
         const pdfFileInput = document.getElementById('pdfFileInput');
         const fileUploadArea = document.getElementById('fileUploadArea');
